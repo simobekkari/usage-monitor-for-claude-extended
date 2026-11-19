@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New `data_source` setting - read usage from Claude Desktop's local `plan-usage-history.json` (`"local"`), or fall back to it automatically when no Claude Code login is present (`"auto"`), so the monitor works without an OAuth token on machines running Claude Desktop; the default `"api"` behavior is unchanged
+
 [Show all code changes](https://github.com/jens-duttke/usage-monitor-for-claude/compare/v1.27.0...HEAD)
 
 ## [1.27.0] - 2026-11-04
