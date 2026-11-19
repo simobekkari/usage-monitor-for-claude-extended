@@ -1268,6 +1268,12 @@ class TestFormatTooltip(unittest.TestCase):
         popup_fields = patch('usage_monitor_for_claude.formatting.POPUP_FIELDS', ['*'])
         popup_fields.start()
         self.addCleanup(popup_fields.stop)
+        # Pin TOOLTIP_FIELDS to its default so a usage-monitor-settings.json present
+        # on the machine running the suite cannot change which fields render. Tests
+        # that need a different set override this with their own @patch.
+        patcher = patch('usage_monitor_for_claude.formatting.TOOLTIP_FIELDS', ['five_hour', 'seven_day'])
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
     def test_error(self):
         result = format_tooltip({'error': 'Connection failed'})
