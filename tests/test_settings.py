@@ -1537,6 +1537,57 @@ class TestCompactHideDefault(unittest.TestCase):
         self.assertEqual(loaded['compact_hide'], ['account', 'status'])
 
 
+class TestDataSourceValidation(unittest.TestCase):
+    """Tests for data_source setting validation."""
+
+    def _run_validate(self, data: dict) -> tuple[dict, MagicMock]:
+        """Run _validate with a mocked warning box and return (result, mock_box)."""
+        mock_box = MagicMock()
+        with patch.object(settings_mod, 'show_warning_box', mock_box):
+            result = settings_mod._validate(dict(data), Path('/fake/settings.json'))
+        return result, mock_box
+
+    def test_valid_values_pass(self):
+        """'api', 'local', and 'auto' pass through unchanged."""
+        for value in ('api', 'local', 'auto'):
+            with self.subTest(value=value):
+                result, mock = self._run_validate({'data_source': value})
+                self.assertEqual(result['data_source'], value)
+                mock.assert_not_called()
+
+    def test_invalid_value_dropped(self):
+        """An unknown data_source is dropped with an error dialog."""
+        result, mock = self._run_validate({'data_source': 'remote'})
+        self.assertNotIn('data_source', result)
+        mock.assert_called_once()
+
+    def test_non_string_dropped(self):
+        """A non-string data_source is dropped."""
+        result, mock = self._run_validate({'data_source': 2})
+        self.assertNotIn('data_source', result)
+        mock.assert_called_once()
+
+
+class TestDataSourceDefault(unittest.TestCase):
+    """Tests for the data_source default."""
+
+    def test_default_without_settings(self):
+        """data_source is absent when no settings file exists (defaults to 'api')."""
+        with TemporaryDirectory() as app_tmp, TemporaryDirectory() as home_tmp:
+            loaded = _load(Path(app_tmp), Path(home_tmp))
+        self.assertNotIn('data_source', loaded)
+
+    def test_exported_in_all(self):
+        """DATA_SOURCE is part of the declared public API."""
+        self.assertIn('DATA_SOURCE', settings_mod.__all__)
+
+    def test_override_from_settings(self):
+        """data_source is loaded from the settings file."""
+        with TemporaryDirectory() as app_tmp, TemporaryDirectory() as home_tmp:
+            (Path(app_tmp) / settings_mod.SETTINGS_FILENAME).write_text(json.dumps({'data_source': 'local'}), encoding='utf-8')
+            loaded = _load(Path(app_tmp), Path(home_tmp))
+        self.assertEqual(loaded['data_source'], 'local')
+
 class TestQuickActionCommandAlias(unittest.TestCase):
     """Tests for resolving the quick action against its former key name."""
 

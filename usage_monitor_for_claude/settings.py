@@ -29,7 +29,7 @@ __all__ = [
     'ACTIVE_SCHEDULE', 'ACTIVE_SCHEDULE_FIELDS',
     'ALERT_EXTRA_USAGE_SPENT', 'ALERT_TIME_AWARE', 'ALERT_TIME_AWARE_BELOW',
     'BAR_BG', 'BAR_DIVIDER', 'BAR_FG', 'BAR_FG_WARN', 'BAR_MARKER', 'BG',
-    'CLI_COMMAND', 'COMPACT_HIDE', 'CURRENCY_SYMBOL',
+    'CLI_COMMAND', 'COMPACT_HIDE', 'CURRENCY_SYMBOL', 'DATA_SOURCE',
     'FG', 'FG_DIM', 'FG_HEADING', 'FG_LINK', 'FORECAST_CHART',
     'ICON_DARK', 'ICON_FIELDS', 'ICON_LIGHT', 'ICON_STYLE', 'IDLE_INTERVAL', 'IDLE_PAUSE',
     'LANGUAGE', 'MAX_BACKOFF', 'MCP_SERVER', 'NOTIFY_CLAUDE_UPDATE',
@@ -56,6 +56,7 @@ _THRESHOLD_KEY_PREFIX = 'alert_thresholds_'
 _PERCENT_KEYS = frozenset({'alert_time_aware_below'})
 _STRING_KEYS = frozenset({'currency_symbol', 'language'})
 _VALID_TIME_FORMATS = frozenset({'24h', '12h'})
+_VALID_DATA_SOURCES = frozenset({'api', 'local', 'auto'})
 _VALID_ICON_STYLES = frozenset({'number+bars', 'numbers'})
 _COMMAND_KEYS = frozenset({
     'quick_action_command', 'on_double_click_command', 'on_reset_command', 'on_startup_command', 'on_threshold_command',
@@ -261,6 +262,11 @@ def _validate(data: dict, path: Path) -> dict:
                 errors.append(f'  {key}: must be "number+bars" or "numbers", got {value!r}')
                 drop.append(key)
 
+        elif key == 'data_source':
+            if value not in _VALID_DATA_SOURCES:
+                errors.append(f'  {key}: must be "api", "local", or "auto", got {value!r}')
+                drop.append(key)
+
         elif key in _COMMAND_KEYS:
             if isinstance(value, str):
                 # An empty or whitespace-only string means "not set" (like [])
@@ -404,6 +410,9 @@ def _icon_colors(key: str, defaults: dict[str, tuple]) -> dict[str, tuple]:
 
 
 _S = _load_settings()
+
+# Data source: 'api' (OAuth usage API), 'local' (Claude Desktop's usage file), or 'auto' (API, falling back to local when no token)
+DATA_SOURCE: str = _S.get('data_source', 'api')
 
 # Polling intervals (seconds)
 POLL_INTERVAL = _S.get('poll_interval', 180)
