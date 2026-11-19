@@ -63,6 +63,11 @@ application changes on your system follows - there is nothing else.
 Monitoring a second Claude account (`--config-dir`) adds a suffix to those names, so each account
 gets its own entry.
 
+In `local` mode the app makes no network requests and uses no credentials: it only reads the
+`plan-usage-history.json` file that the Claude Desktop app itself writes under `%LOCALAPPDATA%`.
+It never reads an OAuth token or any credentials file, and it never writes to the file. (The
+default `api` mode is unchanged and still uses your Claude Code OAuth token as before.)
+
 ## Claude Code Installation
 
 When the OAuth token has expired, the application runs `claude update` so that the Claude Code CLI

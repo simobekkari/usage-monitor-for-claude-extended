@@ -326,3 +326,33 @@ Override individual channels as RGBA arrays `[R, G, B, A]` (0-255). Unspecified 
 | `bar_fg_warn` | `"#e05050"` | Progress bar fill when usage outpaces elapsed time, error text |
 | `bar_divider` | `"#000c"` | Time dividers on progress bars (hour marks on the session bar, midnights on weekly bars, or workday starts when an active schedule applies) |
 | `bar_marker` | `"#fffc"` | Time-position marker on progress bars |
+
+## Data source
+
+Selects where usage data comes from. Defaults to the Anthropic OAuth usage API (unchanged behavior); set `"local"` to read the file the Claude **Desktop** app writes, with no token, no network, and no API call.
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `data_source` | `"api"` | Where to read usage from: `"api"` (Anthropic OAuth usage API), `"local"` (Claude Desktop's `plan-usage-history.json`), or `"auto"` (API when a Claude Code token is present, otherwise local) |
+
+**When to use `"local"`:** you run Claude **Desktop** but have no Claude Code login (no OAuth token), so the API path cannot authenticate. Local mode reads Desktop's own usage file directly.
+
+**Example** - read usage locally and show the session and Cowork-weekly bars:
+
+```json
+{
+    "data_source": "local",
+    "icon_fields": ["five_hour", "seven_day_cowork"],
+    "tooltip_fields": ["five_hour", "seven_day_cowork"]
+}
+```
+
+### Local-mode caveats
+
+Local mode trades some fidelity for needing no token and no network:
+
+- **Utilization is exact.** The percentages come straight from Desktop's file.
+- **Reset countdowns are approximate, or absent.** The file has no reset timestamps, so they are derived from the sample history: the 5-hour reset from the last session start, the weekly reset from the last observed drop. Until enough history is captured, a bar shows without a countdown - expected, not a bug.
+- **Fresh only while Claude Desktop is running.** Desktop writes a new sample about every 5 minutes while open, and nothing while closed. The "updated N ago" status reflects the last file read, not the age of the newest sample, so it can read "fresh" while the data is hours old.
+- **No per-model bars and no account name** - the file carries neither.
+- **Available quotas:** `five_hour`, `seven_day_cowork`, `seven_day_oauth_apps`. There is no generic `seven_day` bucket in local mode, so point `icon_fields` / `tooltip_fields` at `seven_day_cowork`; the defaults reference `seven_day`, which would leave an empty weekly bar.

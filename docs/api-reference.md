@@ -191,3 +191,29 @@ https://api.anthropic.com/api/oauth/organizations/{org_uuid}/prepaid/credits
   "next_expires_at": "2026-09-19T00:00:00Z"
 }
 ```
+
+## Data source dispatch
+
+`cache.py` no longer imports the data layer directly; it imports `fetch_usage`, `fetch_profile` and `fetch_prepaid_credits` from `usage_source`, and still imports `read_access_token` from `api`.
+
+### `usage_source`
+
+Thin dispatcher that routes to a source based on `settings.DATA_SOURCE`:
+
+- `api` - the Anthropic OAuth usage API (`api.py`); default, unchanged behavior.
+- `local` - Claude Desktop's local file (`local_source.py`).
+- `auto` - the API when a token is present, otherwise local. The fallback keys on token presence alone (`api.read_access_token() is None`); when a token exists the API result is returned unchanged, including `auth_error` / `rate_limited` / transient errors, so the cache's token-refresh and 429-backoff paths keep working.
+
+`fetch_usage() -> dict`, `fetch_profile() -> dict | None` and `fetch_prepaid_credits(org_uuid) -> dict | None` have the same signatures as their `api` counterparts.
+
+### `local_source`
+
+Reads the latest sample from `%LOCALAPPDATA%\Packages\Claude_*\LocalCache\Roaming\Claude\plan-usage-history.json` and returns the same dict shape as `api.fetch_usage()`:
+
+- Maps the file's short keys to quota fields: `fh -> five_hour`, `cw -> seven_day_cowork`, `oa -> seven_day_oauth_apps`.
+- `five_hour` is `None` when no session is active (`fh == 0`).
+- `resets_at` is derived only when the history provides an anchor (session start + 5h; last weekly drop + `WEEKLY_RESET_SECONDS`) and is otherwise omitted - never fabricated.
+- Guards on schema `version`; a missing, unreadable, malformed, wrong-version, or empty file returns `{'error': T['local_data_unavailable']}`.
+- `fetch_profile()` always returns `None` (no local profile endpoint).
+- `fetch_prepaid_credits()` always returns `None` (the file carries no credit balance), so local mode makes no network request.
+- Read-only, stdlib-only, network-free; imports neither `api` nor any credentials path.
