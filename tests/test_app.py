@@ -3800,6 +3800,7 @@ class TestNotificationIdentityWiring(unittest.TestCase):
         with patch('usage_monitor_for_claude.app.show_notification') as mock_show, \
              patch('usage_monitor_for_claude.app.autostart_supported', return_value=False), \
              patch('usage_monitor_for_claude.app.api_headers', return_value=None), \
+             patch('usage_monitor_for_claude.app.DATA_SOURCE', 'api'), \
              patch('usage_monitor_for_claude.app.threading.Thread'), \
              patch.object(app, 'poll_loop'):
             app._on_icon_ready(app.icon)
