@@ -49,6 +49,7 @@
     "auth_expired_label": "Sesi Claude Code CLI Berakhir",
     "auth_expired_short": "Masuk lagi dengan: claude auth login",
     "no_token": "Token Claude Code CLI tidak ditemukan - masuk dengan: claude auth login",
+    "local_data_unavailable": "Tidak dapat membaca berkas penggunaan lokal Claude Desktop.",
     "warn_no_token": "PERINGATAN: Token Claude Code CLI tidak ditemukan!",
     "warn_login": "Instal Claude Code CLI dan masuk dengan: claude auth login",
     "notify_reset_title": "Kuota Direset",

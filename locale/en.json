@@ -41,6 +41,7 @@
     "auth_expired_label": "Claude Code CLI Session Expired",
     "auth_expired_short": "Sign in again with: claude auth login",
     "no_token": "No Claude Code CLI token found - sign in with: claude auth login",
+    "local_data_unavailable": "Could not read Claude Desktop's local usage file.",
     "warn_no_token": "WARNING: No Claude Code CLI token found!",
     "warn_login": "Install the Claude Code CLI and sign in with: claude auth login",
     "notify_reset_title": "Quota Reset",

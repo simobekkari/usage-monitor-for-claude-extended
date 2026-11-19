@@ -49,6 +49,7 @@
     "auth_expired_label": "Сесія Claude Code CLI завершилася",
     "auth_expired_short": "Увійдіть знову: claude auth login",
     "no_token": "Токен Claude Code CLI не знайдено - увійдіть: claude auth login",
+    "local_data_unavailable": "Не вдалося прочитати локальний файл використання Claude Desktop.",
     "warn_no_token": "ПОПЕРЕДЖЕННЯ: Токен Claude Code CLI не знайдено!",
     "warn_login": "Встановіть Claude Code CLI та увійдіть: claude auth login",
     "notify_reset_title": "Квоту скинуто",

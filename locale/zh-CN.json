@@ -49,6 +49,7 @@
     "auth_expired_label": "Claude Code CLI 会话已过期",
     "auth_expired_short": "请重新登录：claude auth login",
     "no_token": "未找到 Claude Code CLI 令牌 - 请登录：claude auth login",
+    "local_data_unavailable": "无法读取 Claude Desktop 的本地用量文件。",
     "warn_no_token": "警告：未找到 Claude Code CLI 令牌！",
     "warn_login": "请安装 Claude Code CLI 并登录：claude auth login",
     "notify_reset_title": "配额重置",

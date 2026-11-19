@@ -49,6 +49,7 @@
     "auth_expired_label": "Sesión de Claude Code CLI expirada",
     "auth_expired_short": "Inicia sesión de nuevo con: claude auth login",
     "no_token": "No se encontró token de Claude Code CLI - inicia sesión con: claude auth login",
+    "local_data_unavailable": "No se pudo leer el archivo de uso local de Claude Desktop.",
     "warn_no_token": "ADVERTENCIA: ¡No se encontró token de Claude Code CLI!",
     "warn_login": "Instala Claude Code CLI e inicia sesión con: claude auth login",
     "notify_reset_title": "Cuota restablecida",

@@ -49,6 +49,7 @@
     "auth_expired_label": "Claude Code CLI 세션 만료",
     "auth_expired_short": "다시 로그인하세요: claude auth login",
     "no_token": "Claude Code CLI 토큰을 찾을 수 없습니다 - 로그인: claude auth login",
+    "local_data_unavailable": "Claude Desktop의 로컬 사용량 파일을 읽을 수 없습니다.",
     "warn_no_token": "경고: Claude Code CLI 토큰을 찾을 수 없습니다!",
     "warn_login": "Claude Code CLI를 설치하고 로그인하세요: claude auth login",
     "notify_reset_title": "할당량 재설정",

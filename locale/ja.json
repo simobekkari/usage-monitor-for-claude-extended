@@ -49,6 +49,7 @@
     "auth_expired_label": "Claude Code CLI セッション期限切れ",
     "auth_expired_short": "再ログインしてください: claude auth login",
     "no_token": "Claude Code CLI のトークンが見つかりません - ログイン: claude auth login",
+    "local_data_unavailable": "Claude Desktop のローカル使用状況ファイルを読み取れませんでした。",
     "warn_no_token": "警告: Claude Code CLI のトークンが見つかりません！",
     "warn_login": "Claude Code CLI をインストールしてログインしてください: claude auth login",
     "notify_reset_title": "クォータリセット",

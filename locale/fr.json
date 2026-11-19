@@ -49,6 +49,7 @@
     "auth_expired_label": "Session Claude Code CLI expirée",
     "auth_expired_short": "Reconnectez-vous avec : claude auth login",
     "no_token": "Aucun jeton Claude Code CLI trouvé - connectez-vous avec : claude auth login",
+    "local_data_unavailable": "Impossible de lire le fichier d'utilisation local de Claude Desktop.",
     "warn_no_token": "ATTENTION : Aucun jeton Claude Code CLI trouvé !",
     "warn_login": "Installez Claude Code CLI et connectez-vous avec : claude auth login",
     "notify_reset_title": "Quota réinitialisé",
