@@ -27,7 +27,7 @@ from .platforms import (
     show_notification, sync_autostart_path, taskbar_uses_light_theme, watch_theme_change,
 )
 from .settings import (
-    ALERT_EXTRA_USAGE_SPENT, ALERT_TIME_AWARE, ALERT_TIME_AWARE_BELOW, ICON_FIELDS, IDLE_INTERVAL, IDLE_PAUSE, MCP_SERVER,
+    ALERT_EXTRA_USAGE_SPENT, ALERT_TIME_AWARE, ALERT_TIME_AWARE_BELOW, DATA_SOURCE, ICON_FIELDS, IDLE_INTERVAL, IDLE_PAUSE, MCP_SERVER,
     NOTIFY_CLAUDE_UPDATE, ON_RESET_COMMAND, ON_STARTUP_COMMAND, ON_THRESHOLD_COMMAND, POLL_ERROR, POLL_FAST,
     POLL_FAST_EXTRA, POLL_INTERVAL, POPUP_FIELDS, QUICK_ACTION_COMMAND, get_alert_thresholds,
 )
@@ -1075,7 +1075,7 @@ class UsageMonitorForClaude:
             icon.visible = True
             if autostart_supported():
                 sync_autostart_path()
-            if not api_headers():
+            if _should_warn_missing_token():
                 self._notify(f"{T['warn_no_token']}\n{T['warn_login']}", T['popup_title'])
             threading.Thread(target=watch_theme_change, args=(self._on_theme_changed,), daemon=True).start()
             if MCP_SERVER:
@@ -1086,6 +1086,11 @@ class UsageMonitorForClaude:
 
     def run(self) -> None:
         self.icon.run(setup=self._on_icon_ready)
+
+
+def _should_warn_missing_token() -> bool:
+    """True only when the selected data source needs an OAuth token but none is present."""
+    return DATA_SOURCE == 'api' and not api_headers()
 
 
 def crash_log(msg: str) -> None:

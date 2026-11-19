@@ -16,6 +16,7 @@ from unittest.mock import MagicMock, patch
 
 from usage_monitor_for_claude.app import (
     POLL_FAST, RESET_BUFFER, UsageMonitorForClaude, _align_to_reset,
+    _should_warn_missing_token,
 )
 from usage_monitor_for_claude.cache import UpdateResult, UsageCache
 from usage_monitor_for_claude.claude_cli import RefreshResult
@@ -3990,6 +3991,34 @@ class TestManualRefresh(unittest.TestCase):
             app.on_refresh()
         worker.assert_called_once_with(target=app.refresh_now, daemon=True)
         worker.return_value.start.assert_called_once_with()
+
+
+class TestMissingTokenWarning(unittest.TestCase):
+    """The missing-token startup warning fires only when the data source needs a token."""
+
+    @patch('usage_monitor_for_claude.app.api_headers', return_value=None)
+    @patch('usage_monitor_for_claude.app.DATA_SOURCE', 'api')
+    def test_api_mode_without_token_warns(self, *_):
+        """api mode with no token warns - it cannot work without one."""
+        self.assertTrue(_should_warn_missing_token())
+
+    @patch('usage_monitor_for_claude.app.api_headers', return_value={'Authorization': 'Bearer token'})
+    @patch('usage_monitor_for_claude.app.DATA_SOURCE', 'api')
+    def test_api_mode_with_token_does_not_warn(self, *_):
+        """api mode with a token does not warn."""
+        self.assertFalse(_should_warn_missing_token())
+
+    @patch('usage_monitor_for_claude.app.api_headers', return_value=None)
+    @patch('usage_monitor_for_claude.app.DATA_SOURCE', 'local')
+    def test_local_mode_never_warns(self, *_):
+        """local mode never warns - it needs no token."""
+        self.assertFalse(_should_warn_missing_token())
+
+    @patch('usage_monitor_for_claude.app.api_headers', return_value=None)
+    @patch('usage_monitor_for_claude.app.DATA_SOURCE', 'auto')
+    def test_auto_mode_without_token_does_not_warn(self, *_):
+        """auto mode with no token falls back to local, so it does not warn."""
+        self.assertFalse(_should_warn_missing_token())
 
 
 if __name__ == '__main__':
