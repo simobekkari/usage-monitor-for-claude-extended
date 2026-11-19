@@ -16,10 +16,11 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-from .api import fetch_prepaid_credits, fetch_profile, fetch_usage, read_access_token
+from .api import read_access_token
 from .claude_cli import RefreshResult, refresh_token
 from .forecast import record_samples
 from .settings import FORECAST_CHART, MAX_BACKOFF, POLL_FAST, POLL_INTERVAL
+from .usage_source import fetch_prepaid_credits, fetch_profile, fetch_usage
 
 __all__ = ['CacheSnapshot', 'MANUAL_REFRESH_INTERVAL', 'RESET_BUFFER', 'UpdateResult', 'UsageCache', 'reset_offsets']
 
